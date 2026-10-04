@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { db } from '../database/db';
+import { User } from '../types';
 import { ShieldCheck, UserPlus, AlertCircle } from 'lucide-react';
 
 interface FirstRunSetupProps {
-  onComplete: () => void;
+  onComplete: (user: User) => void;
 }
 
 export const FirstRunSetup: React.FC<FirstRunSetupProps> = ({ onComplete }) => {
@@ -23,7 +24,7 @@ export const FirstRunSetup: React.FC<FirstRunSetupProps> = ({ onComplete }) => {
     try {
       const result = await db.createFirstAdmin(name, username, password);
       if (!result.success) setError(result.message);
-      else onComplete();
+      else if (result.user) onComplete(result.user);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'تعذر إنشاء المدير الأول.');
     } finally {
