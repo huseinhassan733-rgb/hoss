@@ -14,3 +14,9 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run build
+      - name: Package installable web build
+        run: cd dist && zip -r ../hoss-web-build.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hoss-web-build
+          path: hoss-web-build.zip
