@@ -84,9 +84,13 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  const handleFirstRunComplete = () => {
+  const handleFirstRunComplete = (user: User) => {
     setHasUsers(true);
-    setIsLoginOpen(true);
+    setCurrentUser(user);
+    const year = db.getFinancialYears().find((y) => y.status === 'open') || db.getFinancialYears()[0];
+    setActiveYear(year);
+    setIsLoginOpen(false);
+    setCurrentModule(null);
   };
 
   const handleLoginSuccess = (user: User, year: FinancialYear) => {
