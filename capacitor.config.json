@@ -1,0 +1,9 @@
+{
+  "appId": "com.hoss.school",
+  "appName": "نظام إدارة المدرسة",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
