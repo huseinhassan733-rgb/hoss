@@ -1,0 +1,1 @@
+export function nextNumber(prefix, items){ return `${prefix}-${String(items.length+1).padStart(5,"0")}`; }
