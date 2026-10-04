@@ -1,0 +1,6 @@
+{
+  "name": "H2pro - نظام المحاسبة وإدارة الأعمال المتكامل",
+  "description": "تطبيق إدارة الحسابات والأستاذ العام والمخزون والمبيعات والمشتريات وسطح المكتب المتكامل بنمط كلاسيكي عربي",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
