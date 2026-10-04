@@ -47,3 +47,6 @@ export function postJournal({date,description,lines,sourceType,sourceId}){
   save(db); return j;
 }
 export function exportBackup(){ return JSON.stringify(load(),null,2); }
+
+export function nextNumber(prefix){const d=load();d.counters[prefix]=(d.counters[prefix]||0)+1;save(d);return prefix+"-"+String(d.counters[prefix]).padStart(5,"0")}
+export function importBackup(text){const d=JSON.parse(text);return save(d)}
