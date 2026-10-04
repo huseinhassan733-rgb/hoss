@@ -21,7 +21,7 @@ const seed = {
   audit: []
 };
 
-function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || structuredClone(seed); } catch { return structuredClone(seed); } }
+function load(){ try { const d=JSON.parse(localStorage.getItem(KEY))||structuredClone(seed); ["enrollments","expenses","payroll","library","inventory"].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[]}); if(!d.counters)d.counters={}; return d; } catch { return structuredClone(seed); } }
 function save(db){ localStorage.setItem(KEY, JSON.stringify(db)); window.dispatchEvent(new Event("hoss-db-change")); return db; }
 export function getDB(){ return load(); }
 export function resetDB(){ return save(structuredClone(seed)); }
