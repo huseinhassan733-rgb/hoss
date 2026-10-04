@@ -1,0 +1,7 @@
+{
+  "appId": "com.h2pro.erp",
+  "appName": "H2pro المحاسبي",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": { "androidScheme": "https" }
+}
