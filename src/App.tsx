@@ -9,6 +9,7 @@ import { db } from './database/db';
 import { DesktopWindow } from './components/DesktopWindow';
 import { HeaderBar } from './components/HeaderBar';
 import { LoginModal } from './screens/LoginModal';
+import { FirstRunSetup } from './screens/FirstRunSetup';
 import { MainMenuScreen, MainModuleId } from './screens/MainMenuScreen';
 import { SystemSetupScreen } from './screens/SystemSetupScreen';
 import { SystemAdminScreen } from './screens/SystemAdminScreen';
@@ -34,7 +35,8 @@ export default function App() {
     const openYear = db.getFinancialYears().find((y) => y.status === 'open');
     return openYear || db.getFinancialYears()[0];
   });
-  const [isLoginOpen, setIsLoginOpen] = useState(true);
+  const [hasUsers, setHasUsers] = useState<boolean>(() => db.getUsers().length > 0);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(() => db.getUsers().length > 0);
   const [isPDFModalOpen, setIsPDFModalOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [currentToastAlert, setCurrentToastAlert] = useState<SmartAlert | null>(null);
@@ -77,9 +79,15 @@ export default function App() {
     const unsubscribe = db.subscribe(() => {
       setFinancialYears(db.getFinancialYears());
       setCompany(db.getCompanyInfo());
+      setHasUsers(db.getUsers().length > 0);
     });
     return unsubscribe;
   }, []);
+
+  const handleFirstRunComplete = () => {
+    setHasUsers(true);
+    setIsLoginOpen(true);
+  };
 
   const handleLoginSuccess = (user: User, year: FinancialYear) => {
     setCurrentUser(user);
@@ -180,12 +188,19 @@ export default function App() {
 
   return (
     <DesktopWindow>
-      {/* Central Login Window (displayed on launch or upon logout) */}
-      <LoginModal
-        isOpen={isLoginOpen || !currentUser}
-        financialYears={financialYears}
-        onLoginSuccess={handleLoginSuccess}
-      />
+      {/* First-run setup: create the first administrator when the database has no users */}
+      {!hasUsers && !currentUser && (
+        <FirstRunSetup onComplete={handleFirstRunComplete} />
+      )}
+
+      {/* Central Login Window (displayed after first-run setup or upon logout) */}
+      {hasUsers && (
+        <LoginModal
+          isOpen={isLoginOpen || !currentUser}
+          financialYears={financialYears}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
 
       {/* Main ERP Workstation */}
       {currentUser && (
