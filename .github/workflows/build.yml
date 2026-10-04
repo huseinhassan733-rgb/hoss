@@ -1,0 +1,41 @@
+name: H2pro Build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm run build
+  android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm run build
+      - run: npx cap add android
+      - run: npx cap sync android
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+      - working-directory: android
+        run: ./gradlew assembleDebug
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk H2pro-ERP.apk
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="apk-build-${{ github.run_number }}"
+          gh release create "$TAG" H2pro-ERP.apk --title "H2pro ERP APK ${{ github.run_number }}" --notes "Android APK generated from main."
